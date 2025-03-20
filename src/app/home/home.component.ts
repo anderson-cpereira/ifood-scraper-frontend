@@ -140,7 +140,7 @@ export class HomeComponent implements OnDestroy {
     if (this.sseSource) {
       this.sseSource.close();
     }
-    this.sseSource = new EventSource(`http://127.0.0.1:8000/progresso/${task_id}`);
+    this.sseSource = new EventSource(`https://ifood-scraper-backend.onrender.com/progresso/${task_id}`);
 
     // Usar addEventListener para o evento específico 'progresso'
     this.sseSource.addEventListener('progresso', (event: MessageEvent) => {
@@ -204,7 +204,7 @@ export class HomeComponent implements OnDestroy {
       : 'F';
 
     this.http.post<ScrapingResponse>(
-      `http://127.0.0.1:8000/scrape/?type_search=${type_search}&max_produtos=${this.maxProdutos}&task_id=${task_id}`,
+      `https://ifood-scraper-backend.onrender.com/scrape/?type_search=${type_search}&max_produtos=${this.maxProdutos}&task_id=${task_id}`,
       body
     ).subscribe({
       next: (response) => {
