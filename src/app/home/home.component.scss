@@ -1,0 +1,228 @@
+.card {
+  max-width: 1200px;
+  margin: 10px auto;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.input-container {
+  padding: 5px;
+}
+
+.produto-lista-container {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Garante que não haja scroll horizontal */
+  margin-bottom: 10px;
+}
+
+.produto-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Reduzido de 10px para economizar espaço */
+  width: 100%; /* Garante que não exceda o container */
+}
+
+.produto-field {
+  flex-grow: 1;
+  min-width: 120px; /* Reduzido ainda mais para evitar scroll horizontal */
+  max-width: calc(100% - 132px); /* 80px (Qtd) + 36px (botão) + 16px (gaps) */
+  overflow: hidden; /* Evita overflow do conteúdo */
+  mat-form-field {
+    height: 36px !important; /* Força a altura reduzida */
+    font-size: 14px;
+  }
+  .mat-mdc-text-field-wrapper {
+    height: 28px !important;
+    padding: 0 8px;
+  }
+  input {
+    padding: 2px 0 !important; /* Reduz padding vertical */
+    font-size: 14px;
+    height: 24px !important;
+  }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+.quantidade-field {
+  width: 80px;
+  mat-form-field {
+    height: 36px !important;
+    font-size: 14px;
+  }
+  .mat-mdc-text-field-wrapper {
+    height: 28px !important;
+    padding: 0 8px;
+  }
+  input {
+    padding: 2px 0 !important;
+    font-size: 14px;
+    height: 24px !important;
+  }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+.add-button {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.max-produtos-field {
+  width: 150px;
+  mat-form-field {
+    height: 36px !important;
+    font-size: 14px;
+  }
+  .mat-mdc-text-field-wrapper {
+    height: 28px !important;
+    padding: 0 8px;
+  }
+  input {
+    padding: 2px 0 !important;
+    font-size: 14px;
+    height: 24px !important;
+  }
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #555;
+  mat-progress-bar {
+    max-width: 500px;
+    margin: 0 auto 10px auto;
+  }
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+.erro {
+  text-align: center;
+  color: #d32f2f;
+  padding: 20px;
+}
+
+.melhor-compra-card {
+  background-color: #e8f5e9;
+  margin: 20px;
+  border: 1px solid #c8e6c9;
+}
+
+.produtos-escolhidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 10px;
+}
+
+.produto-escolhido {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.produto-imagem {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.resultados {
+  padding: 20px;
+}
+
+.mercado-card {
+  margin-bottom: 20px;
+}
+
+.mercado-card mat-card {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mercado-card .melhor-compra {
+  border: 2px solid #4caf50;
+}
+
+.mercado-imagem {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.info-entrega {
+  color: #666;
+}
+
+.produto-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 10px;
+}
+
+.produto-card {
+  width: 250px;
+  background-color: #fafafa;
+  border: 1px solid #eee;
+  padding: 10px;
+}
+
+.preco {
+  color: #388e3c;
+}
+
+.diferenca {
+  color: #f57c00;
+}
+
+.rating {
+  color: #ffb300;
+}
+
+.tipo-selecao {
+  padding: 20px 20px 10px 20px;
+  display: flex;
+  justify-content: center;
+  mat-radio-group {
+    display: flex;
+    gap: 20px;
+  }
+}
+
+/* Restante do SCSS permanece igual */
+.card {
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* ... resto do arquivo ... */
+
+::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
+  --mat-mdc-form-field-label-transform: translateY(calc(calc(6.75px + 36px) / 1.5 * -1)) scale(var(--mat-mdc-form-field-floating-label-scale, 0.75)) !important;
+  transform: var(--mat-mdc-form-field-label-transform) !important;
+}

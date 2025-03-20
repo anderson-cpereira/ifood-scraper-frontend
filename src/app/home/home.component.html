@@ -1,0 +1,127 @@
+<mat-card class="card">
+  <mat-card-content>
+    <mat-card class="card">
+  <mat-card-content>
+    <!-- Seleção de Tipo -->
+    <div class="tipo-selecao">
+      <mat-radio-group [(ngModel)]="tipoSelecionado" (change)="onTipoChange()">
+        <mat-radio-button value="mercados">Mercados</mat-radio-button>
+        <mat-radio-button value="farmacias">Farmácias</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <!-- Formulário de Entrada -->
+    <div class="input-container">
+      <div class="produto-lista-container">
+        <div *ngFor="let produto of produtos; let i = index" class="produto-item">
+          <mat-form-field appearance="outline" class="produto-field">
+            <mat-label>Item</mat-label>
+            <input matInput [(ngModel)]="produto.produto" placeholder="Ex.: Coca-Cola 200ml">
+            <button mat-icon-button matSuffix color="warn" (click)="removerProduto(i)" *ngIf="produtos.length > 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="quantidade-field">
+            <mat-label>Qtd</mat-label>
+            <input matInput type="number" [(ngModel)]="produto.quantidade" min="1">
+          </mat-form-field>
+          <button mat-icon-button color="accent" (click)="adicionarProduto()" *ngIf="i === produtos.length - 1" class="add-button">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="actions">
+        <mat-form-field appearance="outline" class="max-produtos-field">
+          <mat-label>Máx. Produtos</mat-label>
+          <input matInput type="number" [(ngModel)]="maxProdutos" min="1">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="scrape()" [disabled]="isLoading">
+          Buscar
+        </button>
+      </div>
+    </div>
+        
+    <div *ngIf="isLoading" class="loading">
+      <mat-progress-bar mode="determinate" [value]="progresso"></mat-progress-bar>
+      <p>{{ mensagemProgresso }} ({{ progresso | number:'1.0-0' }}%)</p>
+    </div>
+
+    <!-- Erro -->
+    <div *ngIf="erro && !isLoading" class="erro">
+      <p>{{ erro }}</p>
+    </div>
+
+    <!-- Mensagem quando nenhum item é encontrado em nenhum mercado -->
+    <div *ngIf="resultado && !isLoading && !hasAnyProdutosEscolhidos()" class="erro">
+      <p>Nenhum item foi encontrado nos {{ tipoSelecionado === 'mercados' ? 'mercados' : 'farmácias' }} pesquisados.</p>
+    </div>
+
+    <!-- Melhor Compra -->
+    <div *ngIf="resultado && !isLoading && resultado.melhor_compra && (resultado.melhor_compra.produtos_escolhidos?.length ?? 0) > 0" class="melhor-compra">
+      <mat-card class="melhor-compra-card">
+        <mat-card-header>
+          <mat-card-title>Melhor Compra: {{ resultado.melhor_compra.mercado }}</mat-card-title>
+          <mat-card-subtitle>Custo Total: {{ resultado.melhor_compra.custo_total }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="produtos-escolhidos">
+            <div *ngFor="let escolhido of resultado.melhor_compra.produtos_escolhidos" class="produto-escolhido">
+              <img [src]="(escolhido.produto.imagem_local ? 'http://127.0.0.1:8000' + escolhido.produto.imagem_local : escolhido.produto.imagem_url) || 'https://via.placeholder.com/100x100?text=Sem+Imagem'" alt="{{ escolhido.produto.nome }}" class="produto-imagem">
+              <p>{{ escolhido.quantidade }}x {{ escolhido.produto.nome }} - {{ getPrecoFormatado(escolhido.produto.preco).atual }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Todos os Mercados (ordenados por custo total) -->
+    <div *ngIf="resultado && !isLoading && hasAnyProdutosEscolhidos()" class="resultados">
+      <div *ngFor="let mercado of resultado.mercados | sortByCost:'asc'" class="mercado-card">
+        <mat-card *ngIf="(mercado.produtos_escolhidos?.length ?? 0) > 0" [ngClass]="{'melhor-compra': mercado.nome === resultado.melhor_compra.mercado}">
+          
+          <mat-card-header>
+            <img mat-card-avatar [src]="(mercado.imagem_local ? 'http://127.0.0.1:8000' + mercado.imagem_local : mercado.imagem_url) || 'https://via.placeholder.com/100x100?text=Sem+Imagem'" alt="{{ mercado.nome }}" class="mercado-imagem">
+            <mat-card-title>{{ mercado.nome }}</mat-card-title>
+            <mat-card-subtitle>
+              <span class="rating">{{ mercado.rating }} ★</span> • {{ mercado.distancia.split('\n')[0] }} km
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="info-entrega">
+              Entrega: {{ mercado.tempo_entrega }} • {{ mercado.custo_entrega }} • Total: {{ mercado.custo_total }}
+            </p>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>Produtos Escolhidos</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="produto-cards">
+                <mat-card *ngFor="let escolhido of mercado.produtos_escolhidos" class="produto-card">
+                  <mat-card-content>
+                    <img [src]="(escolhido.produto.imagem_local ? 'http://127.0.0.1:8000' + escolhido.produto.imagem_local : escolhido.produto.imagem_url) || 'https://via.placeholder.com/100x100?text=Sem+Imagem'" alt="{{ escolhido.produto.nome }}" class="produto-imagem">
+                    <h4>{{ escolhido.quantidade }}x {{ escolhido.produto.nome }}</h4>
+                    <p class="preco">{{ getPrecoFormatado(escolhido.produto.preco).atual }}</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel *ngIf="mercado.combinacoes.length > 0">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Opções Secundárias</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="produto-cards">
+                <mat-card *ngFor="let combinacao of mercado.combinacoes" class="produto-card">
+                  <mat-card-content>
+                    <img [src]="(combinacao.produto.imagem_local ? 'http://127.0.0.1:8000' + combinacao.produto.imagem_local : combinacao.produto.imagem_url) || 'https://via.placeholder.com/100x100?text=Sem+Imagem'" alt="{{ combinacao.produto.nome }}" class="produto-imagem">
+                    <h4>{{ combinacao.quantidade }}x {{ combinacao.produto.nome }}</h4>
+                    <p class="preco">{{ getPrecoFormatado(combinacao.produto.preco).atual }}</p>
+                    <p class="diferenca">+{{ combinacao.diferenca.toFixed(2) }}</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </mat-expansion-panel>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
